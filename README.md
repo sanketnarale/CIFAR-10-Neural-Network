@@ -4,6 +4,36 @@
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white)
 
+## 🏆 Final Kaggle Leaderboard Results
+This project explores two different approaches to solving the CIFAR-10 challenge. Here are our final test scores on the completely blind Kaggle dataset:
+
+| Model Architecture | Training Approach | Kaggle Test Accuracy |
+| :--- | :--- | :--- |
+| **Model 1: Custom CNN** | Built and trained completely from scratch | **74.00%** |
+| **Model 2: ResNet-18** | Transfer Learning (Pre-trained on ImageNet) | **82.44%** |
+
+---
+
+## 📊 Visualizations & Training Analysis
+Below are the visual results and metrics gathered from our best-performing **ResNet-18** model during its training and testing phase.
+
+### 1. Training Metrics (Loss & Accuracy)
+We mathematically track the model's learning progress (Loss) and Accuracy over the epochs to ensure it converges efficiently without overfitting to the training data.
+
+> ![Training Metrics](saved_models/ResNet18/plots/training_metrics.png)
+
+### 2. Training Set: Prediction vs Actual
+A visual sanity check comparing the model's outputs against the true labels on the training set. *(Note: Green text indicates a correct prediction, Red indicates an incorrect prediction).*
+
+> ![Training Prediction Grid](saved_models/ResNet18/plots/training_predictions.png)
+
+### 3. Kaggle Test Set: Final Blind Predictions
+This grid shows the model's "blind" predictions on the completely unlabelled Kaggle Test Dataset right before the CSV was generated for our 82.44% submission!
+
+> ![Test Prediction Grid](saved_models/ResNet18/plots/test_predictions.png)
+
+---
+
 ## 📌 Project Overview
 This repository contains a complete, end-to-end Machine Learning pipeline to solve the famous [Kaggle CIFAR-10 Competition](https://www.kaggle.com/c/cifar-10). The goal is to classify `32x32` pixel RGB images into exactly 10 distinct, mutually exclusive categories (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck).
 
@@ -11,24 +41,18 @@ Unlike starter datasets (like MNIST), this project uses **raw physical image fil
 
 ---
 
-## 📂 Workspace Structure
-The project is built using professional, modular architecture to separate the data pipeline, the "brain" (models), and the "directors" (training/submission scripts).
+## 🧠 Model Architectures
 
-```text
-📦 CIFAR-10/
-├── 📁 data/                  # Ignored by Git. Contains physical train/test .png files
-├── 📁 saved_models/          # Trained weights (.pth), metrics (.json), and plots
-│   └── 📁 ResNet18/
-│       └── 📁 plots/         # Loss curves and prediction grids
-├── 📁 src/
-│   ├── 📁 data/              # Data downloading, exploration, and custom PyTorch Datasets
-│   ├── 📁 model/             # Neural Network Architectures (Custom CNN & ResNet)
-│   ├── 📁 train/             # Training loop scripts
-│   ├── 📁 submit/            # Inference and CSV generation for Kaggle
-│   └── 📁 utils/             # Reusable visualization and plotting functions
-├── .env                      # Secure Kaggle API token storage
-└── README.md
-```
+### 1. Baseline Model: Custom CNN (From Scratch)
+Built entirely from scratch using PyTorch `nn.Conv2d` blocks.
+* **Architecture:** 3 Convolutional Blocks (Conv $\rightarrow$ ReLU $\rightarrow$ MaxPool2d), followed by Flattening, and 2 Linear layers.
+* **Math:** Reduced the `32x32` images down to `4x4` grids with 128 feature channels.
+
+### 2. Advanced Model: Transfer Learning (ResNet-18)
+To break past the 74% baseline, we implemented **Transfer Learning**.
+* **Architecture:** We downloaded a pre-trained `ResNet-18` model (which uses revolutionary "Skip Connections" to prevent the vanishing gradient problem).
+* **Fine-Tuning:** The original model was trained to predict 1,000 classes. We "chopped off the head" by replacing the final Fully Connected (`fc`) layer with a brand-new, blank 10-output linear layer.
+* **Training:** We fine-tuned the model, allowing the brand new output layer to learn how to interpret the genius signals coming from the convolutional layers.
 
 ---
 
@@ -42,52 +66,25 @@ We wrote a Custom `Dataset` class (`CIFAR10KaggleDataset`) to load images iterat
 
 ---
 
-## 🧠 Model Architectures
+## 📂 Workspace Structure
+The project is built using professional, modular architecture to separate the data pipeline, the "brain" (models), and the "directors" (training/submission scripts).
 
-### 1. Baseline Model: Custom CNN (From Scratch)
-Built entirely from scratch using PyTorch `nn.Conv2d` blocks.
-* **Architecture:** 3 Convolutional Blocks (Conv $\rightarrow$ ReLU $\rightarrow$ MaxPool2d), followed by Flattening, and 2 Linear layers.
-* **Math:** Reduced the `32x32` images down to `4x4` grids with 128 feature channels.
-* **Performance:** Achieved **74% Accuracy** on the Kaggle Leaderboard after only 5 epochs!
-
-### 2. Advanced Model: Transfer Learning (ResNet-18)
-To break past the 74% baseline, we implemented **Transfer Learning**.
-* **Architecture:** We downloaded a pre-trained `ResNet-18` model (which uses revolutionary "Skip Connections" to prevent the vanishing gradient problem).
-* **Fine-Tuning:** The original model was trained to predict 1,000 classes. We "chopped off the head" by replacing the final Fully Connected (`fc`) layer with a brand-new, blank 10-output linear layer.
-* **Training:** We fine-tuned the model, allowing the brand new output layer to learn how to interpret the genius signals coming from the convolutional layers.
-* **Performance:** Achieved **82.44% Accuracy** on the Kaggle Leaderboard, a massive leap from our 74% baseline!
-
----
-
-## 📊 Visualizations & Results
-*Plots are generated dynamically in the `saved_models/ResNet18/plots` directory upon training completion.*
-
-<details>
-<summary><b>📉 1. Training Metrics (Click to Expand)</b></summary>
-<br>
-We mathematically track the model's learning progress (Loss) and Accuracy over the epochs to ensure it converges efficiently without overfitting to the training data.
-<br><br>
-<img src="saved_models/ResNet18/plots/training_metrics.png" alt="Training Metrics" width="800"/>
-<br>
-</details>
-
-<details>
-<summary><b>👀 2. Training Set: Prediction vs Actual (Click to Expand)</b></summary>
-<br>
-A visual sanity check comparing the model's outputs against the true labels on the training set.
-<br><br>
-<img src="saved_models/ResNet18/plots/training_predictions.png" alt="Training Prediction Grid" width="500"/>
-<br>
-<i>(Note: Green text indicates a correct prediction, Red indicates an incorrect prediction).</i>
-</details>
-
-<details open>
-<summary><b>🚀 3. Kaggle Test Set: Final Blind Predictions (Click to Expand)</b></summary>
-<br>
-This grid shows the model's "blind" predictions on the completely unlabelled Kaggle Test Dataset right before the CSV was generated for submission!
-<br><br>
-<img src="saved_models/ResNet18/plots/test_predictions.png" alt="Test Prediction Grid" width="500"/>
-</details>
+```text
+📦 CIFAR-10/
+├── 📁 data/                  # Ignored by Git. Contains physical train/test .png files
+├── 📁 saved_models/          # Trained weights (.pth), metrics (.json), and plots
+│   └── 📁 ResNet18/
+│       ├── 📁 plots/         # Loss curves and prediction grids
+│       └── 📁 submission/    # Final Kaggle CSV files
+├── 📁 src/
+│   ├── 📁 data/              # Data downloading, exploration, and custom PyTorch Datasets
+│   ├── 📁 model/             # Neural Network Architectures (Custom CNN & ResNet)
+│   ├── 📁 train/             # Training loop scripts
+│   ├── 📁 submit/            # Inference and CSV generation for Kaggle
+│   └── 📁 utils/             # Reusable visualization and plotting functions
+├── .env                      # Secure Kaggle API token storage
+└── README.md
+```
 
 ---
 
