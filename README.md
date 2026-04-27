@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Kaggle](https://img.shields.io/badge/Kaggle-035a7d?style=for-the-badge&logo=kaggle&logoColor=white)
 
-## 🏆 Final Kaggle Leaderboard Results
+## 🏆 Final Results
 This project explores two different approaches to solving the CIFAR-10 challenge. Here are our final test scores on the completely blind Kaggle dataset:
 
 | Model Architecture | Training Approach | Kaggle Test Accuracy |
