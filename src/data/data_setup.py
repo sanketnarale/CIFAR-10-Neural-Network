@@ -21,7 +21,9 @@ train_transform = transforms.Compose([
     transforms.ToTensor(),
     #converts the physical images to pytorch tensors (4d arrays (B,C,H,W)) 
     
-    transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
+    #transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5)) # uncomment this if using ur custom model
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
     #Standardizes pixel values btw -1 and 1
 
 ])

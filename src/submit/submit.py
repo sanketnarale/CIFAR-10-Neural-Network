@@ -7,9 +7,24 @@ from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
 
 # Import our CNN Brain!
+# Import our CNN Brain!
+# ==============================================================================
+# ⚠️ HOW TO SWAP MODELS ⚠️
+# If you build a new model (e.g., EfficientNet), you must change 4 things in this file:
+# 1. The import line below (Import your new model class)
+# 2. The initialization (model = YourNewModel().to(device) around line 95)
+# 3. The weights path (model_weights_path = ... around line 100)
+# 4. The plot directory (plot_dir = ... around line 150)
+# 5. The output CSV name (df.to_csv(...) around line 160)
+# ==============================================================================
+
 import sys
 sys.path.append('d:/sanket/Neural Networks/CIFAR-10/src/model')
-from model1 import CIFAR10CNN
+# from model1 import CIFAR10CNN
+from model_resnet import CIFAR10ResNet
+# for plots
+sys.path.append('d:/sanket/Neural Networks/CIFAR-10/src/utils')
+from visualize import plot_predictions
 
 # --- 1. PREPARE THE DATA ---
 kaggle_path = r"C:\Users\naral\.cache\kagglehub\competitions\cifar-10"
@@ -38,10 +53,12 @@ class CIFAR10TestDataset(Dataset):
         
         # Notice we DO NOT use RandomHorizontalFlip here!
         # When taking a test, you don't want the paper spinning around.
-        # We just want the raw image converted to math (Tensor) and centered at zero (Normalize).
+        # We must use the EXACT same ImageNet math we used during training!
         self.transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            # ⚠️ HOW TO SWAP MODELS: If using your custom CNN (model1), comment out the line above and uncomment the line below!
+            # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ])
 
     def __len__(self):
@@ -80,11 +97,16 @@ def generate_submission():
     print(f"Running inference on: {device}")
 
     # Initialize a blank model (an empty brain)
-    model = CIFAR10CNN().to(device)
+    model = CIFAR10ResNet().to(device)
     
     # Load all the "memories" and math (weights) from our training session!
     # WARNING: Update this path if you saved it in a 'models/' folder!
-    model_weights_path = "d:/sanket/Neural Networks/CIFAR-10/cifar10_model.pth"
+    
+    #model_weights_path = "d:/sanket/Neural Networks/CIFAR-10/cifar10_model.pth"
+    
+    # uncomment the above line if want to generate the csv for custom_CNN
+    model_weights_path = "d:/sanket/Neural Networks/CIFAR-10/saved_models/ResNet18/cifar10_resnet_model.pth"
+
     model.load_state_dict(torch.load(model_weights_path, weights_only=True))
     
     # model.eval() is CRITICAL. It tells the model: "We are taking a test now. Don't learn, don't update."
@@ -131,6 +153,11 @@ def generate_submission():
             if (i + 1) % 100 == 0:
                 print(f"Processed batch {i+1}/{len(test_loader)}")
 
+    # --- Generate Visual Grid for Test Set ---
+    plot_dir = r"d:\sanket\Neural Networks\CIFAR-10\saved_models\ResNet18\plots"
+    # We pass 'predicted_indices' and set actual_labels=None because the Test set has no real labels!
+    plot_predictions(images, predicted_indices, classes, plot_dir, "test_predictions.png", actual_labels=None)
+
     # --- 5. CREATE THE CSV FILE ---
     print("Saving submission.csv...")
     
@@ -141,9 +168,14 @@ def generate_submission():
     df = df.sort_values(by="id")
     
     # Save the spreadsheet to a file! index=False stops pandas from adding its own row numbers
-    df.to_csv("submission.csv", index=False)
+    # We save it into the ResNet18/submission folder to keep everything hyper-organized!
+    submission_dir = r"d:\sanket\Neural Networks\CIFAR-10\saved_models\ResNet18\submission"
+    os.makedirs(submission_dir, exist_ok=True)
+    csv_path = os.path.join(submission_dir, "submission_resnet.csv")
     
-    print("Done! You can now upload submission.csv to Kaggle!")
+    df.to_csv(csv_path, index=False)
+    
+    print(f"Done! You can now upload {csv_path} to Kaggle!")
 
 if __name__ == "__main__":
     generate_submission()
