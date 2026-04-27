@@ -115,8 +115,9 @@ def generate_submission():
     # Prepare the DataLoader
     test_dataset = CIFAR10TestDataset(root_dir=test_extract_path)
     
-    # Batch size is 256. Because we aren't training, we use less memory, so we can process more images at once!
-    test_loader = DataLoader(test_dataset, batch_size=256, shuffle=False, num_workers=2)
+    # Windows Multiprocessing bug fix: Set num_workers=0. 
+    # Windows struggles with num_workers > 0 when dealing with 300,000 files in a single folder.
+    test_loader = DataLoader(test_dataset, batch_size=256, shuffle=False, num_workers=0)
 
     # We will store all our guesses here
     results = []

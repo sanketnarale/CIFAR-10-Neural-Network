@@ -55,24 +55,39 @@ To break past the 74% baseline, we implemented **Transfer Learning**.
 * **Architecture:** We downloaded a pre-trained `ResNet-18` model (which uses revolutionary "Skip Connections" to prevent the vanishing gradient problem).
 * **Fine-Tuning:** The original model was trained to predict 1,000 classes. We "chopped off the head" by replacing the final Fully Connected (`fc`) layer with a brand-new, blank 10-output linear layer.
 * **Training:** We fine-tuned the model, allowing the brand new output layer to learn how to interpret the genius signals coming from the convolutional layers.
-* **Performance:** *Inference and Kaggle testing currently in progress...*
+* **Performance:** Achieved **82.44% Accuracy** on the Kaggle Leaderboard, a massive leap from our 74% baseline!
 
 ---
 
-## 📊 Training & Visualization
+## 📊 Visualizations & Results
 *Plots are generated dynamically in the `saved_models/ResNet18/plots` directory upon training completion.*
 
-### Training Metrics (Loss & Accuracy)
-We track the model's learning progress over the epochs to ensure it converges without overfitting.
+<details>
+<summary><b>📉 1. Training Metrics (Click to Expand)</b></summary>
+<br>
+We mathematically track the model's learning progress (Loss) and Accuracy over the epochs to ensure it converges efficiently without overfitting to the training data.
+<br><br>
+<img src="saved_models/ResNet18/plots/training_metrics.png" alt="Training Metrics" width="800"/>
+<br>
+</details>
 
-> ![Training Metrics](saved_models/ResNet18/plots/training_metrics.png)
-*(Note: If the image above is broken, it means the model is currently training! Check back soon.)*
+<details>
+<summary><b>👀 2. Training Set: Prediction vs Actual (Click to Expand)</b></summary>
+<br>
+A visual sanity check comparing the model's outputs against the true labels on the training set.
+<br><br>
+<img src="saved_models/ResNet18/plots/training_predictions.png" alt="Training Prediction Grid" width="500"/>
+<br>
+<i>(Note: Green text indicates a correct prediction, Red indicates an incorrect prediction).</i>
+</details>
 
-### Model Predictions (Visual Grid)
-A visual sanity check comparing the model's actual outputs against the true labels.
-
-> ![Prediction Grid](saved_models/ResNet18/plots/training_predictions.png)
-*(Note: Green text indicates a correct prediction, Red indicates an incorrect prediction).*
+<details open>
+<summary><b>🚀 3. Kaggle Test Set: Final Blind Predictions (Click to Expand)</b></summary>
+<br>
+This grid shows the model's "blind" predictions on the completely unlabelled Kaggle Test Dataset right before the CSV was generated for submission!
+<br><br>
+<img src="saved_models/ResNet18/plots/test_predictions.png" alt="Test Prediction Grid" width="500"/>
+</details>
 
 ---
 
