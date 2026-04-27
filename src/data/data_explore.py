@@ -60,3 +60,25 @@ plt.imshow(img)
 plt.title(f"File: 9000.png | True Label: {label_name}")
 plt.axis('off')
 plt.show()
+
+import torchvision.transforms as transforms
+
+# 8. Let's see what ToTensor actually does!
+to_tensor = transforms.ToTensor()
+
+# Pass our physical image ('img') through the transform
+img_tensor = to_tensor(img)
+
+print("\n--- Tensor Transformation ---")
+print(f"Shape of Tensor: {img_tensor.shape}")  # Notice it's now [Channels, Height, Width]
+print(f"Data type: {img_tensor.dtype}")        # It converted it to a Float32 decimal
+
+# Let's look at the actual numbers for the top-left corner pixel across the 3 RGB channels
+print("\nTop-Left Pixel Values (Notice they are between 0.0 and 1.0!):")
+print(f"Red value:   {img_tensor[0, 0, 0]}")
+print(f"Green value: {img_tensor[1, 0, 0]}")
+print(f"Blue value:  {img_tensor[2, 0, 0]}")
+
+# If you want to see the entire 32x32 grid of numbers for the Red channel, 
+# uncomment the line below:
+print(img_tensor[0])
